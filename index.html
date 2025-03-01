@@ -6,8 +6,85 @@
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>To do list</title>
+        <script src="/js/index.js" defer></script>
+        <link rel="stylesheet" href="/css/style.css">
+        <script src="https://kit.fontawesome.com/2a9a138293.js" crossorigin="anonymous"></script>
     </head>
     <body>
+        <!--Menu-->
+        <nav>
+            <i class="fa-solid fa-bars open-menu" onclick=toggleMenu()></i>
+            <div class="menu">
+                <i class="fa-solid fa-xmark close-menu" onclick=toggleMenu()></i>
+                <ul>
+                    <li><a class="menuItem">Vos tâches</a></li>
+                    <li><a class="menuItem">Ajouter une tâche</a></li>
+                    <li><a class="menuItem">Vos notifications</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main>
+            <h1>Bienvenu(e) dans votre gestionnaire de tâches</h1>
+            <section class="container-searchBar-addButton">
+                <div class="search">
+                    <label for="search"></label>
+                    <input type="search" id="search" placeholder="Rechercher..."><i
+                        class="fa-solid fa-magnifying-glass search-icon"></i>
+                </div>
+                <button onclick=openModal()> Ajouter</button>
+            </section>
+
+            <dialog id="addNewTask">
+                <i class="fa-solid fa-xmark close-dialog" onclick=closeModal()></i>
+                <form id="addNewTaskForm">
+                    <section>
+                        <label for="title">Titre</label>
+                        <input type="text" placeholder="Titre" id="title" required>
+                    </section>
+                    <section>
+                        <label for="description">Description</label>
+                        <input type="text" placeholder="Titre" id="description" required>
+                    </section>
+                    <section>
+                        <label for="date">Date</label>
+                        <input type="date" placeholder="Titre" id="date" required>
+                    </section>
+                    <section>
+                        <label for="priority">Priorité</label>
+                        <input type="text" placeholder="Titre" id="priority" required>
+                    </section>
+                    <button type="submit">Ajouter</button>
+                </form>
+
+            </dialog>
+
+            <div class="filters">
+
+                <div>
+                    <h3 class="filter-item">Toutes vos tâches</h3>
+                    <section class="container-tasks">
+                    </section>
+                </div>
+
+                <div>
+                    <h3 class="filter-item">En cours</h3>
+                    <section class="container-ongoingTask">
+                    </section>
+                </div>
+
+                <div>
+                    <h3 class="filter-item">Terminées</h3>
+                    <section class="container-finished">
+                    </section>
+                </div>
+
+
+            </div>
+
+
+
+        </main>
 
     </body>
 </html>

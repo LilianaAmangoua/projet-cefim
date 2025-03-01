@@ -1,0 +1,114 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #F1F1F1;
+}
+
+main {
+    margin-left: 2rem;
+}
+
+
+.open-menu {
+    position: relative;
+    z-index: 100;
+    top: 1rem;
+    left: 1rem;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.menu {
+    display: none;
+    background-color: #FFFFFF;
+    padding-left: 3rem;
+    position: absolute;
+    width: 40%;
+    height: 100vh;
+}
+
+.menu ul {
+    padding-top: 3rem;
+    list-style: none;
+}
+
+.menu ul li {
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.menu.active {
+    display: block;
+}
+
+.close-menu {
+    position: absolute;
+    right: 3rem;
+}
+
+h1 {
+    margin-top: 2rem;
+}
+
+.container-searchBar-addButton {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 3rem;
+    margin-top: 2rem;
+}
+
+.task-card {
+    width: 300px;
+    height: 300px;
+    border: 1px solid black;
+    border-radius: 8px;
+    padding-left: 20px;
+}
+
+dialog:not([open]) {
+    display: none;
+}
+
+
+dialog {
+    width: 50%;
+    height: 50vh;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+dialog form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 80%;
+}
+
+form section {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Centrer le `<dialog>` */
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5); /* Ajoute un fond semi-transparent */
+}
+
+.filters {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.filters.active {
+    border-bottom: 2px solid #000000;
+}
