@@ -26,36 +26,85 @@ function createTask(task, container) {
     const taskPriority = document.createElement("p");
     taskPriority.innerText = task.priority;
 
+    const taskOptions = document.createElement("i");
+    taskOptions.innerHTML = "<i class=\"fa-solid fa-ellipsis-vertical\"></i>";
+
     taskCard.appendChild(taskText);
     taskCard.appendChild(taskDate);
     taskCard.appendChild(taskDescription);
     taskCard.appendChild(taskPriority);
+    taskCard.appendChild(taskOptions);
 
     container.appendChild(taskCard);
 }
 
-const task = {
-    title: "",
-    description: "",
-    priority: "",
-    status: "en cours",
-}
+const taskList = JSON.parse(localStorage.getItem("taskList")) || [];
+document.addEventListener("DOMContentLoaded", () => {
+    taskList.forEach(task => {
+        if (task.status.toLowerCase() === "en cours") {
+            createTask(task, onGoingTasks);
+        } else if (task.status.toLowerCase() === "terminé") {
+            createTask(task, finishedTasks);
+        } else {
+            createTask(task, containerTasks);
+        }
+    })
+});
 
-const taskList = []
+const filterItems = document.querySelectorAll(".filter-item");
 
-localStorage.setItem("taskList", JSON.stringify(taskList));
+
+filterItems.forEach((filterItem) => {
+    filterItem.addEventListener("click", function (event) {
+        event.preventDefault();
+        console.log("Filter item is clicked")
+        filterItem.classList.toggle("active");
+        const tasks = JSON.parse(localStorage.getItem("taskList")) || [];
+
+        containerTasks.innerHTML = "";
+        onGoingTasks.innerHTML = "";
+        finishedTasks.innerHTML = "";
+
+        if (tasks.length > 0) {
+            if (filterItem.innerText.toLowerCase() === "en cours") {
+                const filteredTasks = tasks.filter((item) => {
+                    if (item.status.toLowerCase() === "en cours") {
+                        return item
+                    }
+                })
+                filteredTasks.forEach(task => {
+                    createTask(task, onGoingTasks)
+                })
+            } else if (filterItem.innerText.toLowerCase() === "terminées") {
+                const filteredTasks = tasks.filter((item) => {
+                    if (item.status.toLowerCase() === "terminées") {
+                        return item
+                    }
+                })
+                filteredTasks.forEach(task => {
+                    createTask(task, finishedTasks)
+                })
+            } else {
+                tasks.forEach(task => {
+                    createTask(task, containerTasks);
+                })
+            }
+        }
+
+    })
+})
+
+
 const dialog = document.querySelector("#addNewTask");
 const closeDialog = document.querySelector(".close-dialog");
 const addNewTaskForm = document.querySelector("#addNewTaskForm");
 
 
-function openModal(){
-    //dialog.style.display = "block";
+function openModal() {
     dialog.showModal();
 }
 
 function closeModal() {
-    //dialog.style.display = "none";
     dialog.close();
 }
 
@@ -78,29 +127,32 @@ addNewTaskForm.addEventListener("submit", function (event) {
     };
 
     createTask(task, containerTasks);
-
     taskList.push(task);
 
+    localStorage.setItem("taskList", JSON.stringify(taskList));
 
     addNewTaskForm.reset();
     closeModal();
 });
 
-const filterItem = document.querySelector(".filter-item");
 
-filterItem.addEventListener("click", function (event) {
+// Barre de recherche
+
+const searchBar = document.querySelector("#search");
+searchBar.addEventListener("input", function (event) {
     event.preventDefault();
-    filterItem.classList.toggle("active");
+    const typedLetters = event.target.value.toLowerCase();
+    console.log("Typed Letters : ", typedLetters);
 
-    taskList.map((task) => {
-        if(task.status === "en cours"){
-            createTask(task, onGoingTasks);
-        } else {
-            createTask(task, finishedTasks);
+    const tasks = JSON.parse(localStorage.getItem("taskList")) || [];
+    tasks.forEach((task, index) => {
+        if(task.title.toLowerCase().includes(typedLetters)) {
+           createTask(task, containerTasks);
         }
     })
 
 })
+
 
 
 

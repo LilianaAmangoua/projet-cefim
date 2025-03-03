@@ -109,6 +109,6 @@ dialog::backdrop {
     align-items: center;
 }
 
-.filters.active {
+.filter-tem.active {
     border-bottom: 2px solid #000000;
 }
