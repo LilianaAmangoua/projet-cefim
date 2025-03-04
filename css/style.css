@@ -9,9 +9,14 @@ body {
 }
 
 main {
-    margin-left: 2rem;
+    margin-left: 4rem;
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
 
 .open-menu {
     position: relative;
@@ -39,6 +44,10 @@ main {
 .menu ul li {
     padding: 2rem 1rem;
     text-align: center;
+}
+
+.menu ul li a:hover {
+    text-decoration: underline;
 }
 
 .menu.active {
@@ -70,21 +79,22 @@ h1 {
     padding-left: 20px;
 }
 
-dialog:not([open]) {
+#addNewTask:not([open]) {
     display: none;
 }
 
 
-dialog {
+#addNewTask {
     width: 50%;
     height: 50vh;
     padding: 20px;
     border: none;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin: auto;
 }
 
-dialog form {
+#addNewTask form {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -98,17 +108,68 @@ form section {
 }
 
 /* Centrer le `<dialog>` */
-dialog::backdrop {
+#addNewTask::backdrop {
     background: rgba(0, 0, 0, 0.5); /* Ajoute un fond semi-transparent */
 }
 
 .filters {
     margin-top: 3rem;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
 }
 
-.filter-tem.active {
+.filter-item.active {
+    padding-bottom: 1rem;
     border-bottom: 2px solid #000000;
+}
+
+
+.priority-card-low {
+    background-color: lightgreen;
+    width: fit-content;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+.priority-card-medium {
+    background-color: orange;
+    width: fit-content;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+.priority-card-high {
+    background-color: indianred;
+    width: fit-content;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+
+.priority-card-none {
+    background-color: #9b9ea1;
+    width: fit-content;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+.task-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 10px;
+}
+
+.container-tasks {
+    margin: 3rem auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4rem;
+    width: 95%;
+    place-items: center;
 }
