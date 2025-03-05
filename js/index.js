@@ -14,11 +14,14 @@ function createTask(task, container) {
     taskContainer.classList.add("task-container");
 
     const label = document.createElement("label");
+    label.setAttribute("for", `task-check-${task.title.replace(/\s+/g, "-")}`);
+
     const taskCheck = document.createElement("input");
     taskCheck.type = "checkbox";
-    taskCheck.id = "task-check";
+    taskCheck.id = `task-check-${task.title.replace(/\s+/g, "-")}`;
     label.appendChild(taskCheck);
 
+    taskCheck.checked = task.status === "terminées";
 
 
     const taskCard = document.createElement("div");
@@ -57,14 +60,26 @@ function createTask(task, container) {
     taskCard.appendChild(taskPriority);
 
 
-    container.appendChild(taskCard);
+    if(container){
+        container.appendChild(taskCard);
+    }
+
 
     taskCheck.addEventListener("change", () => {
-        if (taskCheck.checked) {
-            task.status = "terminées";
-        } else {
-            task.status = "en cours";
+        task.status = taskCheck.checked ? "terminées" : "en cours";
+
+        // Mettre à jour le localStorage
+        const tasks = JSON.parse(localStorage.getItem("taskList"));
+        const taskIndex = tasks.findIndex(t => t.title === task.title);
+        if(taskIndex !== -1) {
+            tasks[taskIndex].status = task.status;
+            localStorage.setItem("taskList", JSON.stringify(tasks));
         }
+
+        containerTasks.innerHTML = "";
+        tasks.forEach(task => {
+            createTask(task, containerTasks);
+        })
 
     })
 
@@ -126,65 +141,106 @@ filterItems.forEach((filterItem) => {
 
 
 // Gestion de l'ouverture du dialog (modale)
-const dialog = document.querySelector("#addNewTask");
-const closeDialog = document.querySelector(".close-dialog");
+const addNewTaskDialog = document.querySelector("#addNewTask");
+const closeDialog = document.getElementById("close-dialog");
 const addNewTaskForm = document.querySelector("#addNewTaskForm");
 
-
 function openModal() {
-    dialog.showModal();
+    addNewTaskDialog.showModal();
 }
 
 function closeModal() {
-    dialog.close();
+    addNewTaskDialog.close();
 }
 
-closeDialog.addEventListener("click", closeModal);
+if(closeDialog){
+    closeDialog.addEventListener("click", closeModal);
+}
+
 
 // Ajouter une nouvelle tâche
-addNewTaskForm.addEventListener("submit", function (event) {
-    event.preventDefault();
+if(addNewTaskForm){
+    addNewTaskForm.addEventListener("submit", function (event) {
+        event.preventDefault();
 
-    const title = document.getElementById("title").value;
-    const description = document.getElementById("description").value;
-    const priority = document.getElementById("priority").value;
-    const date = document.getElementById("date").value;
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+        const priority = document.getElementById("priority").value;
+        const date = document.getElementById("date").value;
 
-    const task = {
-        title: title,
-        description: description,
-        priority: priority,
-        status: "en cours",
-        date: date
-    };
+        const task = {
+            title: title,
+            description: description,
+            priority: priority,
+            status: "en cours",
+            date: date
+        };
 
-    createTask(task, containerTasks);
-    taskList.push(task);
+        createTask(task, containerTasks);
+        taskList.push(task);
 
-    localStorage.setItem("taskList", JSON.stringify(taskList));
+        localStorage.setItem("taskList", JSON.stringify(taskList));
 
-    addNewTaskForm.reset();
-    closeModal();
-});
-
-// Deplacer une tâche dans "terminées"
-
+        addNewTaskForm.reset();
+        closeModal();
+    });
+}
 
 
 // Barre de recherche
 const searchBar = document.querySelector("#search");
-searchBar.addEventListener("input", function (event) {
-    event.preventDefault();
-    const typedLetters = event.target.value.toLowerCase();
-    console.log("Typed Letters : ", typedLetters);
+if(searchBar) {
+    searchBar.addEventListener("input", function (event) {
+        event.preventDefault();
+        const typedLetters = event.target.value.toLowerCase();
+        console.log("Typed Letters : ", typedLetters);
 
-    const tasks = JSON.parse(localStorage.getItem("taskList")) || [];
-    tasks.forEach((task, index) => {
-        if(task.title.toLowerCase().includes(typedLetters)) {
-           createTask(task, containerTasks);
-        }
+        containerTasks.innerHTML = "";
+
+        const tasks = JSON.parse(localStorage.getItem("taskList")) || [];
+        tasks.forEach((task, index) => {
+            if (task.title.toLowerCase().includes(typedLetters)) {
+                createTask(task, containerTasks);
+            }
+        })
     })
+} else {
+    console.log("L'élément n'existe pas sur cette page");
+}
+
+
+// Créer une notification
+const tasks = JSON.parse(localStorage.getItem("taskList"));
+const todaysDate = new Date();
+
+tasks.forEach(task => {
+    const taskDate = new Date(task.date)
+    const timeDiff = todaysDate - taskDate;
+    const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    if(daysLeft === 2){
+        createNotification(task);
+    }
 })
+
+const main = document.getElementById("notifications");
+
+function createNotification(task) {
+    const container = document.createElement("div");
+    main.appendChild(container);
+
+    const sentence = document.createElement("p");
+    container.appendChild(sentence);
+
+    const taskName = document.createElement("span");
+    taskName.innerText = task.name;
+
+    sentence.innerText = `Il vous reste 2 jours pour terminer la tâche : ${taskName.innerText}`;
+    sentence.appendChild(taskName);
+
+
+
+
+}
 
 
 

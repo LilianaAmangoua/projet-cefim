@@ -29,13 +29,13 @@
                 <div class="search">
                     <label for="search"></label>
                     <input type="search" id="search" placeholder="Rechercher..."><i
-                        class="fa-solid fa-magnifying-glass search-icon"></i>
+                        class="fa-solid fa-magnifying-glass" id="search-icon"></i>
                 </div>
-                <button onclick=openModal()> Ajouter</button>
+                <button onclick=openModal() class="addTaskButton"><i class="fa-regular fa-plus"></i> Ajouter</button>
             </section>
 
             <dialog id="addNewTask">
-                <i class="fa-solid fa-xmark close-dialog" onclick=closeModal()></i>
+                <i class="fa-solid fa-xmark" id="close-dialog" onclick=closeModal()></i>
                 <form id="addNewTaskForm">
                     <section>
                         <label for="title">Titre</label>

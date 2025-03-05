@@ -1,8 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
 }
+
+
 
 body {
     background: #F1F1F1;
@@ -52,6 +58,7 @@ a {
 
 .menu.active {
     display: block;
+    z-index: 100;
 }
 
 .close-menu {
@@ -69,6 +76,7 @@ h1 {
     align-items: center;
     margin-right: 3rem;
     margin-top: 2rem;
+    position: relative;
 }
 
 .task-card {
@@ -119,8 +127,12 @@ form section {
     align-items: center;
 }
 
+.filter-item {
+    padding: 1rem;
+    cursor: pointer;
+}
+
 .filter-item.active {
-    padding-bottom: 1rem;
     border-bottom: 2px solid #000000;
 }
 
@@ -172,4 +184,47 @@ form section {
     gap: 4rem;
     width: 95%;
     place-items: center;
+}
+
+.addTaskButton {
+    padding: 8px 16px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid lightgrey;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 100px;
+}
+
+.addTaskButton i {
+    margin-right: 4px;
+}
+
+.addTaskButton:hover {
+    color: white;
+    background-color: black;
+}
+
+#search-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    color: rgba(0, 0, 0, 0.53);
+}
+
+.search {
+    position: relative;
+}
+
+input[type = "search"] {
+    width: 600px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    outline: none;
+    border: 1px solid lightgrey;
+}
+
+/* Ne pas afficher la croix de la barre de recherche */
+input[type="search"]::-webkit-search-cancel-button {
+    display: none;
 }
