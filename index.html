@@ -11,29 +11,20 @@
         <script src="https://kit.fontawesome.com/2a9a138293.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <!--Menu-->
-        <nav>
-            <i class="fa-solid fa-bars open-menu" onclick=toggleMenu()></i>
-            <div class="menu">
-                <i class="fa-solid fa-xmark close-menu" onclick=toggleMenu()></i>
-                <ul>
-                    <li><a class="menuItem" href="index.html">Vos tâches</a></li>
-                    <li><a class="menuItem" href="html/notifications.html">Vos notifications</a></li>
-                </ul>
-            </div>
-        </nav>
-
         <main>
             <h1>Bienvenu(e) dans votre gestionnaire de tâches</h1>
             <section class="container-searchBar-addButton">
+                <!--Barre de recherche-->
                 <div class="search">
                     <label for="search"></label>
                     <input type="search" id="search" placeholder="Rechercher..."><i
                         class="fa-solid fa-magnifying-glass" id="search-icon"></i>
                 </div>
+                <!--Bouton pour ajouter une tâche-->
                 <button onclick=openModal() class="addTaskButton"><i class="fa-regular fa-plus"></i> Ajouter</button>
             </section>
 
+            <!--Modale pour ajouter une tâche-->
             <dialog id="addNewTask">
                 <i class="fa-solid fa-xmark" id="close-dialog" onclick=closeModal()></i>
                 <form id="addNewTaskForm">
@@ -51,28 +42,31 @@
                     </section>
                     <section>
                         <label for="priority">Priorité</label>
-                        <input type="text" placeholder="Titre" id="priority" required>
+                        <select name="priorities" id="priority" required>
+                            <option value="">Choisir une priorité</option>
+                            <option value="Basse">Basse</option>
+                            <option value="Moyenne">Moyenne</option>
+                            <option value="Haute">Haute</option>
+                        </select>
                     </section>
                     <button type="submit">Ajouter</button>
                 </form>
 
             </dialog>
 
+            <!--Affichage des tâches-->
             <div class="filters">
-
                 <h3 class="filter-item">Toutes vos tâches</h3>
-
-
                 <h3 class="filter-item">En cours</h3>
-
-
                 <h3 class="filter-item">Terminées</h3>
-
             </div>
             <section class="container-tasks"></section>
 
-
-
+            <!--Modale de confirmation de suppression d'une tâche-->
+            <dialog id="deleteTaskModal"><h3>Souhaitez-vous réellement supprimer cette tâche ?</h3>
+            <button class="cancel" onclick=closeDeleteModal()> Annuler </button>
+                <button class="confirm">Confirmer</button>
+            </dialog>
         </main>
 
     </body>

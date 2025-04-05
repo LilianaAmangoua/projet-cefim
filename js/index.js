@@ -1,18 +1,21 @@
-
-// Gestion de la sidebar
-function toggleMenu() {
-    const menu = document.querySelector(".menu");
-    menu.classList.toggle("active");
-}
-
 const containerTasks = document.querySelector(".container-tasks");
+const deleteTaskModal = document.querySelector("#deleteTaskModal");
+const cancelButton = document.querySelector(".cancel");
+const confirmButton = document.querySelector(".confirm");
+const addNewTaskDialog = document.querySelector("#addNewTask");
+const closeDialog = document.getElementById("close-dialog");
+const addNewTaskForm = document.querySelector("#addNewTaskForm");
+const searchBar = document.querySelector("#search");
+const filterItems = document.querySelectorAll(".filter-item");
 
-// Créer une carte tâche
+let currentTaskToDelete = null;
+
+// Fonction pour créer une tâche
 function createTask(task, container) {
-
     const taskContainer = document.createElement("div");
     taskContainer.classList.add("task-container");
 
+    // Création de la checkbox
     const label = document.createElement("label");
     label.setAttribute("for", `task-check-${task.title.replace(/\s+/g, "-")}`);
 
@@ -20,13 +23,13 @@ function createTask(task, container) {
     taskCheck.type = "checkbox";
     taskCheck.id = `task-check-${task.title.replace(/\s+/g, "-")}`;
     label.appendChild(taskCheck);
-
     taskCheck.checked = task.status === "terminées";
 
-
+    // Création de la carte de tâche
     const taskCard = document.createElement("div");
     taskCard.classList.add("task-card");
 
+    // Éléments de la tâche
     const taskText = document.createElement("h2");
     taskText.innerText = task.title;
 
@@ -38,113 +41,91 @@ function createTask(task, container) {
 
     const taskPriority = document.createElement("p");
     taskPriority.innerText = task.priority;
-    if(taskPriority.innerText === "Basse") {
+
+    // Ajout des classes CSS en fonction de la priorité
+    if (taskPriority.innerText === "Basse") {
         taskPriority.classList.add("priority-card-low");
-    } else if(taskPriority.innerText === "Moyenne") {
+    } else if (taskPriority.innerText === "Moyenne") {
         taskPriority.classList.add("priority-card-medium");
-    } else if(taskPriority.innerText === "Haute") {
+    } else if (taskPriority.innerText === "Haute") {
         taskPriority.classList.add("priority-card-high");
-    } else {
-        taskPriority.classList.add("priority-card-none");
     }
 
-    const taskOptions = document.createElement("i");
-    taskOptions.innerHTML = "<i class=\"fa-solid fa-ellipsis-vertical\"></i>";
+    // Bouton de suppression
+    const taskDelete = document.createElement("i");
+    taskDelete.classList.add("fa-solid", "fa-trash");
 
+    // Construction de la structure de la carte de tâche
     taskCard.appendChild(taskContainer);
     taskContainer.appendChild(label);
     taskContainer.appendChild(taskText);
-    taskContainer.appendChild(taskOptions);
+    taskContainer.appendChild(taskDelete);
     taskCard.appendChild(taskDate);
     taskCard.appendChild(taskDescription);
     taskCard.appendChild(taskPriority);
 
+    container.appendChild(taskCard);
 
-    if(container){
-        container.appendChild(taskCard);
-    }
+    // Écouteur d'événement pour la suppression d'une tâche
+    taskDelete.addEventListener("click", (e) => {
+        e.stopPropagation();
+        currentTaskToDelete = task;
+        deleteTaskModal.showModal();
+    });
 
-
+    // Écouteur d'événement pour changer le statut
     taskCheck.addEventListener("change", () => {
         task.status = taskCheck.checked ? "terminées" : "en cours";
 
-        // Mettre à jour le localStorage
-        const tasks = JSON.parse(localStorage.getItem("taskList"));
+        const tasks = JSON.parse(localStorage.getItem("taskList")) || [];
         const taskIndex = tasks.findIndex(t => t.title === task.title);
-        if(taskIndex !== -1) {
+        if (taskIndex !== -1) {
             tasks[taskIndex].status = task.status;
             localStorage.setItem("taskList", JSON.stringify(tasks));
         }
 
-        containerTasks.innerHTML = "";
-        tasks.forEach(task => {
-            createTask(task, containerTasks);
-        })
-
-    })
-
+        updateTasks();
+    });
 }
 
-// Au rechargement, récupérer les tâches existantes
-const taskList = JSON.parse(localStorage.getItem("taskList")) || [];
+// Fonction pour mettre à jour l'affichage des tâches
+function updateTasks() {
+    const activeFilter = document.querySelector(".filter-item.active");
+    const tasks = JSON.parse(localStorage.getItem("taskList")) || [];
+
+    containerTasks.innerHTML = "";
+
+    if (!activeFilter) return;
+
+    const filterText = activeFilter.innerText.toLowerCase();
+
+    const filteredTasks = tasks.filter(task => {
+        if (filterText === "en cours") return task.status.toLowerCase() === "en cours";
+        if (filterText === "terminées") return task.status.toLowerCase() === "terminées";
+        return true;
+    });
+
+    filteredTasks.forEach(task => createTask(task, containerTasks));
+}
+
+// Initialisation au chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
-    taskList.forEach(task => {
-            createTask(task, containerTasks);
-    })
+    const defaultFilter = document.querySelector(".filter-item");
+    defaultFilter.classList.add("active");
+
+    updateTasks();
 });
 
-
-// Afficher les tâches en fonction de leur statut (en cours, terminées)
-const filterItems = document.querySelectorAll(".filter-item");
-
-
+// Gestion des filtres
 filterItems.forEach((filterItem) => {
-    filterItem.addEventListener("click", function (event) {
-        filterItems.forEach((filterItem) => {
-            filterItem.classList.remove("active");
-        })
-        event.preventDefault();
-        //console.log("Filter item is clicked")
-        filterItem.classList.toggle("active");
-        const tasks = JSON.parse(localStorage.getItem("taskList")) || [];
+    filterItem.addEventListener("click", function () {
+        filterItems.forEach(item => item.classList.remove("active"));
+        this.classList.add("active");
+        updateTasks();
+    });
+});
 
-        containerTasks.innerHTML = "";
-
-        if (tasks.length > 0) {
-            if (filterItem.innerText.toLowerCase() === "en cours") {
-                const filteredTasks = tasks.filter((item) => {
-                    if (item.status.toLowerCase() === "en cours") {
-                        return item
-                    }
-                })
-                filteredTasks.forEach(task => {
-                    createTask(task, containerTasks)
-                })
-            } else if (filterItem.innerText.toLowerCase() === "terminées") {
-                const filteredTasks = tasks.filter((item) => {
-                    if (item.status.toLowerCase() === "terminées") {
-                        return item
-                    }
-                })
-                filteredTasks.forEach(task => {
-                    createTask(task, containerTasks)
-                })
-            } else {
-                tasks.forEach(task => {
-                    createTask(task, containerTasks);
-                })
-            }
-        }
-
-    })
-})
-
-
-// Gestion de l'ouverture du dialog (modale)
-const addNewTaskDialog = document.querySelector("#addNewTask");
-const closeDialog = document.getElementById("close-dialog");
-const addNewTaskForm = document.querySelector("#addNewTaskForm");
-
+// Gestion de la modale d'ajout de tâche
 function openModal() {
     addNewTaskDialog.showModal();
 }
@@ -153,96 +134,72 @@ function closeModal() {
     addNewTaskDialog.close();
 }
 
-if(closeDialog){
+if (closeDialog) {
     closeDialog.addEventListener("click", closeModal);
 }
 
+// Ajout d'une nouvelle tâche
+addNewTaskForm.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-// Ajouter une nouvelle tâche
-if(addNewTaskForm){
-    addNewTaskForm.addEventListener("submit", function (event) {
-        event.preventDefault();
+    const title = document.getElementById("title").value;
+    const description = document.getElementById("description").value;
+    const priority = document.getElementById("priority").value;
+    const date = document.getElementById("date").value;
 
-        const title = document.getElementById("title").value;
-        const description = document.getElementById("description").value;
-        const priority = document.getElementById("priority").value;
-        const date = document.getElementById("date").value;
+    const task = {
+        title: title,
+        description: description,
+        priority: priority,
+        status: "en cours",
+        date: date
+    };
 
-        const task = {
-            title: title,
-            description: description,
-            priority: priority,
-            status: "en cours",
-            date: date
-        };
+    const tasks = JSON.parse(localStorage.getItem("taskList")) || [];
+    tasks.push(task);
+    localStorage.setItem("taskList", JSON.stringify(tasks));
 
-        createTask(task, containerTasks);
-        taskList.push(task);
+    addNewTaskForm.reset();
+    closeModal();
+    updateTasks();
+});
 
-        localStorage.setItem("taskList", JSON.stringify(taskList));
-
-        addNewTaskForm.reset();
-        closeModal();
-    });
-}
-
-
-// Barre de recherche
-const searchBar = document.querySelector("#search");
-if(searchBar) {
+// Gestion de la barre de recherche
+if (searchBar) {
     searchBar.addEventListener("input", function (event) {
-        event.preventDefault();
         const typedLetters = event.target.value.toLowerCase();
-        console.log("Typed Letters : ", typedLetters);
+        const tasks = JSON.parse(localStorage.getItem("taskList")) || [];
 
         containerTasks.innerHTML = "";
 
-        const tasks = JSON.parse(localStorage.getItem("taskList")) || [];
-        tasks.forEach((task, index) => {
+        tasks.forEach(task => {
             if (task.title.toLowerCase().includes(typedLetters)) {
                 createTask(task, containerTasks);
             }
-        })
-    })
-} else {
-    console.log("L'élément n'existe pas sur cette page");
+        });
+    });
 }
 
+// Fonction pour supprimer une tâche
+function deleteTask(task) {
+    const tasks = JSON.parse(localStorage.getItem("taskList")) || [];
+    const updatedTasks = tasks.filter(t => t.title !== task.title);
+    localStorage.setItem("taskList", JSON.stringify(updatedTasks));
+    updateTasks();
+}
 
-// Créer une notification
-const tasks = JSON.parse(localStorage.getItem("taskList"));
-const todaysDate = new Date();
-
-tasks.forEach(task => {
-    const taskDate = new Date(task.date)
-    const timeDiff = todaysDate - taskDate;
-    const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    if(daysLeft === 2){
-        createNotification(task);
+// Gestion de la confirmation de suppression
+confirmButton.addEventListener("click", () => {
+    if (currentTaskToDelete) {
+        deleteTask(currentTaskToDelete);
+        closeDeleteModal();
     }
-})
+});
 
-const main = document.getElementById("notifications");
-
-function createNotification(task) {
-    const container = document.createElement("div");
-    main.appendChild(container);
-
-    const sentence = document.createElement("p");
-    container.appendChild(sentence);
-
-    const taskName = document.createElement("span");
-    taskName.innerText = task.name;
-
-    sentence.innerText = `Il vous reste 2 jours pour terminer la tâche : ${taskName.innerText}`;
-    sentence.appendChild(taskName);
-
-
-
-
+// Fonction pour fermer la modale de suppression
+function closeDeleteModal() {
+    deleteTaskModal.close();
 }
 
-
-
-
-
+// Gestion de l'annulation de suppression
+cancelButton.addEventListener("click", closeDeleteModal);

@@ -8,8 +8,6 @@
     font-weight: 400;
 }
 
-
-
 body {
     background: #F1F1F1;
 }
@@ -24,46 +22,14 @@ a {
     cursor: pointer;
 }
 
-.open-menu {
-    position: relative;
-    z-index: 100;
-    top: 1rem;
-    left: 1rem;
-    padding: 4px;
-    cursor: pointer;
-}
-
-.menu {
-    display: none;
-    background-color: #FFFFFF;
-    padding-left: 3rem;
-    position: absolute;
-    width: 40%;
-    height: 100vh;
-}
-
-.menu ul {
-    padding-top: 3rem;
-    list-style: none;
-}
-
-.menu ul li {
-    padding: 2rem 1rem;
-    text-align: center;
-}
-
-.menu ul li a:hover {
-    text-decoration: underline;
-}
-
-.menu.active {
-    display: block;
-    z-index: 100;
-}
-
-.close-menu {
-    position: absolute;
-    right: 3rem;
+button {
+    padding: 8px 16px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid lightgrey;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 100px;
 }
 
 h1 {
@@ -79,14 +45,66 @@ h1 {
     position: relative;
 }
 
+/*Barre de recherche*/
+#search-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    color: rgba(0, 0, 0, 0.53);
+}
+
+.search {
+    position: relative;
+}
+
+input[type = "search"] {
+    width: 600px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    outline: none;
+    border: 1px solid lightgrey;
+}
+
+/* Ne pas afficher la croix de la barre de recherche */
+input[type="search"]::-webkit-search-cancel-button {
+    display: none;
+}
+
+/*Bouton pour ajouter une tâche*/
+.addTaskButton i {
+    margin-right: 4px;
+}
+
+.addTaskButton:hover {
+    color: white;
+    background-color: black;
+}
+
+
+/*Tâche*/
+.task-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 10px;
+}
+
 .task-card {
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: fit-content;
     border: 1px solid black;
     border-radius: 8px;
     padding-left: 20px;
+    padding-right: 20px;
 }
 
+.task-card p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+
+/*Modale pour ajouter une tâche*/
 #addNewTask:not([open]) {
     display: none;
 }
@@ -94,7 +112,7 @@ h1 {
 
 #addNewTask {
     width: 50%;
-    height: 50vh;
+    height: 70vh;
     padding: 20px;
     border: none;
     border-radius: 10px;
@@ -110,16 +128,39 @@ h1 {
     height: 80%;
 }
 
+#addNewTask form label {
+    font-size: 0.8rem;
+}
+
+#addNewTask form input, #addNewTask form select {
+    width: 250px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    outline: none;
+    border: 1px solid lightgrey;
+}
+
+.container-tasks {
+    margin: 3rem auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4rem;
+    width: 95%;
+    place-items: center;
+}
+
 form section {
     display: flex;
     flex-direction: column;
 }
 
-/* Centrer le `<dialog>` */
 #addNewTask::backdrop {
-    background: rgba(0, 0, 0, 0.5); /* Ajoute un fond semi-transparent */
+    background: rgba(0, 0, 0, 0.5);
 }
 
+
+
+/*Affichage des tâches*/
 .filters {
     margin-top: 3rem;
     display: flex;
@@ -135,7 +176,6 @@ form section {
 .filter-item.active {
     border-bottom: 2px solid #000000;
 }
-
 
 .priority-card-low {
     background-color: lightgreen;
@@ -162,69 +202,3 @@ form section {
 }
 
 
-.priority-card-none {
-    background-color: #9b9ea1;
-    width: fit-content;
-    color: black;
-    padding: 8px 16px;
-    border-radius: 8px;
-}
-
-.task-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 10px;
-}
-
-.container-tasks {
-    margin: 3rem auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 4rem;
-    width: 95%;
-    place-items: center;
-}
-
-.addTaskButton {
-    padding: 8px 16px;
-    background-color: white;
-    border-radius: 8px;
-    border: 1px solid lightgrey;
-    font-weight: 600;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 100px;
-}
-
-.addTaskButton i {
-    margin-right: 4px;
-}
-
-.addTaskButton:hover {
-    color: white;
-    background-color: black;
-}
-
-#search-icon {
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    color: rgba(0, 0, 0, 0.53);
-}
-
-.search {
-    position: relative;
-}
-
-input[type = "search"] {
-    width: 600px;
-    padding: 8px 16px;
-    border-radius: 8px;
-    outline: none;
-    border: 1px solid lightgrey;
-}
-
-/* Ne pas afficher la croix de la barre de recherche */
-input[type="search"]::-webkit-search-cancel-button {
-    display: none;
-}
