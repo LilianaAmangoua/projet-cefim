@@ -88,6 +88,7 @@ input[type="search"]::-webkit-search-cancel-button {
     justify-content: space-between;
     align-items: center;
     margin: 20px 10px;
+    gap: 10px;
 }
 
 .task-card {
